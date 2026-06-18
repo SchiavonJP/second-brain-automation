@@ -1,0 +1,21 @@
+tunnel: 619ee254-2ce5-4b8c-a350-c3022fcc0100
+credentials-file: /root/.cloudflared/619ee254-2ce5-4b8c-a350-c3022fcc0100.json
+protocol: http2
+edge-ip-version: "4"
+no-autoupdate: true
+
+ingress:
+  - hostname: traefik-dash.joaopaulo.me
+    service: http://localhost:8080
+  - hostname: traefik.joaopaulo.me
+    service: https://localhost:443
+    originRequest:
+      noTLSVerify: true
+      originServerName: traefik.joaopaulo.me
+  - hostname: hermes.joaopaulo.me
+    service: http://192.168.0.213:9119
+  - hostname: litellm.joaopaulo.me
+    service: http://192.168.0.211:4000
+  - hostname: odysseus.joaopaulo.me
+    service: http://192.168.0.214:7000
+  - service: http_status:404

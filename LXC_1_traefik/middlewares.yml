@@ -1,0 +1,33 @@
+http:
+  middlewares:
+
+    # Headers de segurança — aplica em qualquer serviço com:
+    # traefik.http.routers.<nome>.middlewares=secure-headers
+    secure-headers:
+      headers:
+        sslRedirect: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 31536000
+        contentTypeNosniff: true
+        browserXssFilter: true
+        referrerPolicy: "strict-origin-when-cross-origin"
+        frameDeny: true
+        customResponseHeaders:
+          X-Robots-Tag: "noindex, nofollow"
+          server: ""
+
+    # Rate limiting — protege endpoints de AI de abuso
+    rate-limit-api:
+      rateLimit:
+        average: 100
+        burst: 50
+        period: 1m
+
+    # Rate limiting mais restrito para UI de admin
+    rate-limit-admin:
+      rateLimit:
+        average: 20
+        burst: 10
+        period: 1m

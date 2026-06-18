@@ -1,0 +1,83 @@
+services:
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: sb_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: secondbrain
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d secondbrain"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+
+  redis:
+    image: redis:7-alpine
+    container_name: sb_redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD}
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
+  falkordb:
+    image: falkordb/falkordb:latest
+    container_name: sb_falkordb
+    restart: unless-stopped
+    environment:
+      REDIS_ARGS: "--requirepass ${FALKORDB_PASSWORD} --appendonly yes"
+      FALKORDB_ARGS: "THREAD_COUNT 4 CACHE_SIZE 25 TIMEOUT 5000"
+    ports:
+      - "127.0.0.1:6380:6379"
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - falkordb_data:/data
+    networks:
+      - data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6379", "-a", "${FALKORDB_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
+volumes:
+  postgres_data:
+  redis_data:
+  falkordb_data:
+
+networks:
+  data:
+    name: sb_data
+    driver: bridge

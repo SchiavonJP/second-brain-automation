@@ -1,0 +1,68 @@
+http:
+  routers:
+
+    # LXC 4 — LiteLLM AI Router
+    litellm:
+      rule: "Host(`litellm.${DOMAIN}`)"
+      entrypoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: litellm
+      middlewares:
+        - secure-headers
+        - rate-limit-api
+
+    # LiteLLM UI de administração
+    litellm-ui:
+      rule: "Host(`litellm.${DOMAIN}`) && PathPrefix(`/ui`)"
+      entrypoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: litellm
+      middlewares:
+        - secure-headers
+        - rate-limit-admin
+
+    # LXC 3 — Odysseus
+    odysseus:
+      rule: "Host(`odysseus.${DOMAIN}`)"
+      entrypoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: odysseus
+      middlewares:
+        - secure-headers
+
+    # LXC 2 — Hermes
+    hermes:
+      rule: "Host(`hermes.${DOMAIN}`)"
+      entrypoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: hermes
+      middlewares:
+        - secure-headers
+
+  services:
+
+    # Aponta para o IP do LXC 4
+    litellm:
+      loadBalancer:
+        servers:
+          - url: "http://<IP_LXC4>:4000"
+
+    # Aponta para o IP do LXC 3
+    odysseus:
+      loadBalancer:
+        servers:
+          - url: "http://<IP_LXC3>:3000"
+
+    # Aponta para o IP do LXC 2
+    hermes:
+      loadBalancer:
+        servers:
+          - url: "http://<IP_LXC2>:8080"

@@ -1,0 +1,33 @@
+{
+  "mcpServers": {
+    "obsidian-vault": {
+      "url": "http://192.168.0.213:3100",
+      "description": "Vault Obsidian via MCP server do Hermes — leitura, escrita e busca semântica",
+      "tools": [
+        "read_note",
+        "write_note",
+        "search_notes",
+        "list_notes",
+        "get_backlinks"
+      ]
+    },
+    "skills-hub": {
+      "url": "http://192.168.0.213:3100/skills",
+      "description": "Skills centralizadas — mesmo hub que o Hermes usa",
+      "tools": [
+        "list_skills",
+        "get_skill",
+        "search_skills"
+      ]
+    },
+    "hermes-memory": {
+      "url": "http://192.168.0.213:3100/memory",
+      "description": "Memória persistente do Hermes — Odysseus pode ler contexto acumulado",
+      "tools": [
+        "get_user_model",
+        "search_memory",
+        "get_recent_synthesis"
+      ]
+    }
+  }
+}

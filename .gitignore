@@ -1,0 +1,19 @@
+# Secrets — never commit
+.env
+*.json.bak
+
+# Traefik TLS certs
+acme.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# Graph output
+graphify-out/
+
+# Node
+node_modules/
+package-lock.json

@@ -1,0 +1,68 @@
+http:
+  routers:
+
+    # LXC 4 — LiteLLM AI Router
+    litellm:
+      rule: "Host(`litellm.joaopaulo.me`)"
+      entrypoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: litellm
+      middlewares:
+        - secure-headers
+        - rate-limit-api
+
+    # LiteLLM UI de administração
+    litellm-ui:
+      rule: "Host(`litellm.joaopaulo.me`) && PathPrefix(`/ui`)"
+      entrypoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: litellm
+      middlewares:
+        - secure-headers
+        - rate-limit-admin
+
+    # LXC 3 — Odysseus
+    odysseus:
+      rule: "Host(`odysseus.joaopaulo.me`)"
+      entrypoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: odysseus
+      middlewares:
+        - secure-headers
+
+    # LXC 2 — Hermes
+    hermes:
+      rule: "Host(`hermes.joaopaulo.me`)"
+      entrypoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: hermes
+      middlewares:
+        - secure-headers
+
+  services:
+
+    # LXC 4 — port 4000
+    litellm:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.0.211:4000"
+
+    # LXC 3 — port 7000
+    odysseus:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.0.214:7000"
+
+    # LXC 2 — port 9119 (dashboard)
+    hermes:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.0.213:9119"

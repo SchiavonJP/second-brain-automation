@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "obsidian-vault": {
+      "url": "http://localhost:3100",
+      "description": "Vault Obsidian — leitura, escrita e busca semântica de notas",
+      "tools": [
+        "read_note",
+        "write_note",
+        "search_notes",
+        "list_notes",
+        "get_backlinks"
+      ]
+    },
+    "skills-hub": {
+      "url": "http://localhost:3100",
+      "description": "Skills centralizadas — disponíveis para Hermes e Odysseus",
+      "tools": [
+        "list_skills",
+        "get_skill",
+        "search_skills"
+      ]
+    },
+    "second-brain": {
+      "url": "http://sb_hermes:3100/mcp",
+      "description": "MCP server interno do Hermes (Docker internal DNS)"
+    }
+  }
+}
