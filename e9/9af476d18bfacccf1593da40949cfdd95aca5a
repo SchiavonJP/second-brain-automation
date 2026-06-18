@@ -1,0 +1,20 @@
+LXC_5_dados/docker-compose.yml
+  s_22cb7aff683b44::t_d24e791a35932e 11-12
+  s_22cb7aff683b44::t_7f7b3e259d715e 39-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "e99af476d18bfacccf1593da40949cfdd95aca5a",
+  "prompts": {},
+  "sessions": {
+    "s_22cb7aff683b44": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b5c2a7a7-b816-462f-948b-3ebf675348c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "João Paulo Schiavon <schiavonjp@yahoo.com.br>"
+    }
+  }
+}
