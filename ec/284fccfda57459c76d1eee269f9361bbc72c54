@@ -1,0 +1,37 @@
+LXC_2_hermes_mcp/readme.md
+  s_2a0b750afbf9c5::t_11a0b36364c82f 61-82
+LXC_4_litellm/readme.md
+  s_2a0b750afbf9c5::t_aa7e0038347682 70-95
+LXC_1_traefik/readme.md
+  s_2a0b750afbf9c5::t_157b5fe10af8c1 59-84
+LXC_5_dados/readme.md
+  s_2a0b750afbf9c5::t_081423a51c2d9f 62-83
+LXC_5_dados/01_databases.sql
+  s_22cb7aff683b44::t_e54f86dbb082f3 9-13
+LXC_7_docker_stack/readme.md
+  s_2a0b750afbf9c5::t_2df663b90d866a 49-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "ec284fccfda57459c76d1eee269f9361bbc72c54",
+  "prompts": {},
+  "sessions": {
+    "s_22cb7aff683b44": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b5c2a7a7-b816-462f-948b-3ebf675348c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "João Paulo Schiavon <schiavonjp@yahoo.com.br>"
+    },
+    "s_2a0b750afbf9c5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d5511eeb-fea1-418e-9199-d57bc0c2f3a4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "João Paulo Schiavon <schiavonjp@yahoo.com.br>"
+    }
+  }
+}
