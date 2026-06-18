@@ -1,0 +1,46 @@
+LXC_7_docker_stack/docker-compose.yml
+  s_2a0b750afbf9c5::t_daf4516c126088 1-34
+plan.md
+  s_2a0b750afbf9c5::t_52cfbc8be0a006 349-354
+  s_2a0b750afbf9c5::t_39c9c1bcbd020d 82-85
+  s_2a0b750afbf9c5::t_1205f5ad1497b0 139
+  s_2a0b750afbf9c5::t_f5b3cdf5a7c0fe 153-154
+  s_2a0b750afbf9c5::t_ca589f8025bd9a 216-224
+  s_2a0b750afbf9c5::t_8522017aa8bdb9 102
+  s_2a0b750afbf9c5::t_3cba7c27a0e4c9 358
+  s_68553c07b3613c::t_2b3adedf6ff811 6-26
+LXC_5_dados/01_databases.sql
+  s_2a0b750afbf9c5::t_3519cc92911b15 7,11-12
+CLAUDE.md
+  s_2a0b750afbf9c5::t_bab263582427fa 39,45-47
+  s_2a0b750afbf9c5::t_30b39150c51570 5,9,14-15
+LXC_7_docker_stack/readme
+  s_2a0b750afbf9c5::t_84dffb16a9a1be 1-106
+LXC_1_traefik/dynamic/services.yml
+  s_2a0b750afbf9c5::t_466c09863193fd 91-102
+  s_2a0b750afbf9c5::t_fafcc75473b454 50-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "160973a78cccc7142e3d411ce643d03c0591a513",
+  "prompts": {},
+  "sessions": {
+    "s_2a0b750afbf9c5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d5511eeb-fea1-418e-9199-d57bc0c2f3a4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "João Paulo Schiavon <schiavonjp@yahoo.com.br>"
+    },
+    "s_68553c07b3613c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "27fcbf8b-e794-46c5-ae51-f5bcffa9a69b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "João Paulo Schiavon <schiavonjp@yahoo.com.br>"
+    }
+  }
+}
