@@ -2,15 +2,17 @@
 
 ## Project Overview
 
-Proxmox homelab "second brain" with 5 LXC containers:
+Proxmox homelab "second brain" with 7 LXC containers:
 
 | LXC | Codename | Role | IP | Port |
 |-----|----------|------|----|------|
-| 1 | Traefik | Reverse proxy / TLS | — | 80/443 |
+| 1 | Traefik | Reverse proxy / TLS | 192.168.0.212 | 80/443 |
 | 2 | Hermes | Agent + MCP server | 192.168.0.213 | 3100 (MCP), 9119 (dashboard) |
 | 3 | Odysseus | Second agent (MCP client) | 192.168.0.214 | 7000 |
 | 4 | LiteLLM | LLM router (OpenRouter free) | 192.168.0.211 | 4000 |
 | 5 | Dados | Postgres 17, Redis 7, FalkorDB | 192.168.0.210 | 5432/6379/6380 |
+| 6 | sb-dev | Dev environment (deferred) | 192.168.0.215 | — |
+| 7 | sb-monitor | Uptime Kuma + Dockhand | 192.168.0.216 | 3001 (Kuma), 3000 (Dockhand) |
 
 ## MCP Architecture
 
@@ -34,13 +36,12 @@ A graphify graph exists at `graphify-out/graph.json`. Use it for codebase naviga
 - LXC_2 IP: `192.168.0.213` — used in Odysseus mcp-servers.json
 - LXC_4 (LiteLLM) IP: `192.168.0.211` — used in Hermes docker-compose
 - LXC_5 (Dados) IP: `192.168.0.210` — Postgres and Redis
-
-## Active Plan
-
-See `/Users/jschiavon/.claude/plans/in-lxc-2-hermes-mcp-readme-we-have-cached-thompson.md` for the current MCP v1 migration + bug fix plan.
+- LXC_7 (Monitor) IP: `192.168.0.216` — Uptime Kuma + Dockhand
 
 ## Docker Service Names
 
 - `sb_litellm` — LiteLLM container
 - `sb_hermes` — Hermes agent
-- `sb_hermes` — MCP server (Docker internal DNS for Hermes compose network)
+- `sb_mcp` — MCP server
+- `sb_kuma` — Uptime Kuma (LXC 7)
+- `sb_dockhand` — Dockhand (LXC 7)

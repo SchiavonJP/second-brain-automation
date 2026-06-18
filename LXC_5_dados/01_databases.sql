@@ -4,7 +4,9 @@
 
 CREATE DATABASE hermes;
 CREATE DATABASE odysseus;
+CREATE DATABASE dockhand;
 
 -- Permissões
 GRANT ALL PRIVILEGES ON DATABASE hermes TO secondbrain;
 GRANT ALL PRIVILEGES ON DATABASE odysseus TO secondbrain;
+GRANT ALL PRIVILEGES ON DATABASE dockhand TO secondbrain;

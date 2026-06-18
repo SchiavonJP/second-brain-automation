@@ -3,6 +3,27 @@
 > Context document for Claude Code.
 > Describes the goal, architecture, decisions made, current state, and next steps.
 
+**Repo:** `https://github.com/SchiavonJP/second-brain-automation.git`
+
+### SSH key setup for LXCs (run from Proxmox host)
+
+```bash
+pct exec <VMID> -- mkdir -p /root/.ssh
+cat ~/.ssh/id_ed25519.pub | pct exec <VMID> -- tee /root/.ssh/authorized_keys
+pct exec <VMID> -- chmod 700 /root/.ssh
+pct exec <VMID> -- chmod 600 /root/.ssh/authorized_keys
+```
+
+### Deploy any LXC via sparse checkout
+
+```bash
+git clone --no-checkout --filter=blob:none https://github.com/SchiavonJP/second-brain-automation.git
+cd second-brain-automation
+git sparse-checkout init --cone
+git sparse-checkout set <LXC_folder>   # e.g. LXC_1_traefik
+git checkout main
+```
+
 ---
 
 ## Goal
@@ -58,6 +79,10 @@ Internet / LAN
 │                                                     │
 │  LXC 6 — sb-dev       192.168.0.215                │
 │    Clean Debian · Remote SSH · CLI tools           │
+│                                                     │
+│  LXC 7 — sb-monitor   192.168.0.216                │
+│    Uptime Kuma · HTTP/TCP/SSL monitoring           │
+│    Dockhand · Docker container management UI       │
 └─────────────────────────────────────────────────────┘
       │                          │
       ▼                          ▼
@@ -74,7 +99,7 @@ local inference          vault sync
 - **Dockhand** — LXC management at the Proxmox host level (not inside containers)
 - **Traefik v3.6** — reverse proxy with TLS via Cloudflare DNS Challenge (not TLS challenge — ports closed)
 - **Cloudflare DNS Challenge** — domain on Cloudflare, API token with `Zone → DNS → Edit` permission
-- **No Kuma** — Dockhand covers basic monitoring; Kuma deferred
+- **Uptime Kuma + Dockhand on LXC 7** — added after a 502 debugging session (Jun 2026) that took 30 min to diagnose manually; Kuma would have surfaced it immediately
 
 ### Data
 - **Postgres + Redis on dedicated LXC 5** — decoupled from services; each LXC can be restarted independently
@@ -111,6 +136,7 @@ local inference          vault sync
 | LXC 4 | sb-router | 192.168.0.211 | 2 cores | 2 GB | 10 GB |
 | LXC 5 | sb-dados | 192.168.0.210 | 2 cores | 2 GB | 20 GB |
 | LXC 6 | sb-dev | 192.168.0.215 | 2 cores | 2 GB | 20 GB |
+| LXC 7 | sb-monitor | 192.168.0.216 | 1 core | 1 GB | 10 GB |
 
 All: Debian 12 · Docker · `features: keyctl=1,nesting=1` on Proxmox
 
@@ -124,6 +150,8 @@ All: Debian 12 · Docker · `features: keyctl=1,nesting=1` on Proxmox
 | `litellm.domain.com` | LiteLLM UI | LXC 4 |
 | `odysseus.domain.com` | Odysseus | LXC 3 |
 | `hermes.domain.com` | Hermes dashboard | LXC 2 |
+| `monitor.domain.com` | Uptime Kuma | LXC 7 |
+| `dockhand.domain.com` | Dockhand | LXC 7 |
 
 ---
 
@@ -184,6 +212,15 @@ All: Debian 12 · Docker · `features: keyctl=1,nesting=1` on Proxmox
 - Data persists in `root_odysseus_data` Docker named volume (not `./data/` bind mount) — `rm -rf data/` is not enough; use `docker volume rm`
 - `docker compose down -v` only removes volumes from the current project — orphan volumes from previous compose runs (different directory) survive
 - `SECURE_COOKIES=true` is required for production (Cloudflare HTTPS); local HTTP sessions will be rejected by the browser
+
+### ✅ LXC 7 — Monitor (COMPLETE — pending Proxmox LXC creation)
+
+- Uptime Kuma (`louislam/uptime-kuma:1`) — HTTP/TCP/SSL monitoring for all services
+- Dockhand (`fnsys/dockhand:latest`) — Docker container management UI
+- Postgres reused from LXC 5 (`dockhand` database)
+- Traefik routes: `monitor.joaopaulo.me` (port 3001), `dockhand.joaopaulo.me` (port 3000)
+- Files: `docker-compose.yml`, `.env`, `readme`
+- **Pending**: create LXC 7 on Proxmox, run `docker exec sb_postgres psql -U secondbrain -c "CREATE DATABASE dockhand;"` on LXC 5, deploy, configure Kuma monitors via UI
 
 ### ⏳ LXC 6 — Dev (DEFERRED)
 - Clean Debian, no Docker
@@ -309,10 +346,16 @@ apt install -y python3 python3-pip python3-venv
 
 ---
 
+## Bonus Steps (optional, low priority)
+
+- **Homepage** (`ghcr.io/gethomepage/homepage:latest`) — static start page with Kuma status badges embedded. Only worth adding if the stack grows beyond ~10 services or accessing from many different machines. Config is a single YAML file — no DB needed. Would live on LXC 7 alongside Kuma + Dockhand, port 3002, route `home.joaopaulo.me`.
+
+---
+
 ## Deferred Items (revisit later)
 
 - **Gitea** — mirror GitHub repos for local offline access; useful when agents need frequent access to repos without rate limits
-- **Uptime Kuma** — HTTP monitoring for services; add if services go down silently
+- ~~**Uptime Kuma**~~ — deployed on LXC 7 (`monitor.joaopaulo.me`)
 - **FalkorDB activation** — enable when Graphify joins the stack; knowledge graph schema to be defined
 - **Graphify** — for code + vault graph; exports to `graph.json` and optionally FalkorDB; run as CLI on LXC 6 or as a Hermes nightly job
 - **Hermes nightly pipeline** — configure schedules via `hermes schedule add` once Hermes is stable
