@@ -46,8 +46,7 @@ cd second-brain-automation
 git sparse-checkout init --cone
 git sparse-checkout set LXC_7_docker_stack
 git checkout main
-cp -r LXC_7_docker_stack/. /opt/second-brain/monitor/
-cd /opt/second-brain/monitor
+cd LXC_7_docker_stack
 ```
 
 ## Editar variáveis
@@ -62,7 +61,6 @@ nano .env
 ## Subir
 
 ```bash
-cd /opt/second-brain/monitor
 docker compose up -d
 docker compose ps
 ```
@@ -71,8 +69,7 @@ docker compose ps
 
 ```bash
 cd ~/second-brain-automation && git pull
-cp -r LXC_7_docker_stack/. /opt/second-brain/monitor/
-cd /opt/second-brain/monitor && docker compose up -d
+cd LXC_7_docker_stack && docker compose up -d
 ```
 
 ## Acesso

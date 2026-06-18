@@ -67,8 +67,7 @@ cd second-brain-automation
 git sparse-checkout init --cone
 git sparse-checkout set LXC_4_litellm
 git checkout main
-cp -r LXC_4_litellm/. /opt/second-brain/router/
-cd /opt/second-brain/router
+cd LXC_4_litellm
 ```
 
 ## Setup
@@ -79,10 +78,9 @@ cp .env.example .env
 nano .env   # fill in LITELLM_MASTER_KEY, LITELLM_SALT_KEY, OPENROUTER_API_KEY, passwords
 
 # 2. Substituir <IP_MAC_M1> no config.yaml pelo IP real do Mac
-nano /opt/second-brain/router/config.yaml
+nano config.yaml
 
 # 3. Subir
-cd /opt/second-brain/router
 docker compose up -d
 
 # 4. Verificar
@@ -94,8 +92,7 @@ curl http://localhost:4000/health
 
 ```bash
 cd ~/second-brain-automation && git pull
-cp -r LXC_4_litellm/. /opt/second-brain/router/
-cd /opt/second-brain/router && docker compose up -d
+cd LXC_4_litellm && docker compose up -d
 ```
 
 ## Testar roteamento

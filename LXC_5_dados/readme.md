@@ -59,8 +59,7 @@ cd second-brain-automation
 git sparse-checkout init --cone
 git sparse-checkout set LXC_5_dados
 git checkout main
-cp -r LXC_5_dados/. /opt/second-brain/dados/
-cd /opt/second-brain/dados
+cd LXC_5_dados
 ```
 
 ## Setup inicial
@@ -71,7 +70,6 @@ cp .env.example .env
 nano .env   # fill in POSTGRES_PASSWORD, REDIS_PASSWORD, FALKORDB_PASSWORD
 
 # 2. Subir os serviços
-cd /opt/second-brain/dados
 docker compose up -d
 
 # 3. Verificar saúde dos containers
@@ -82,7 +80,7 @@ docker compose ps
 
 ```bash
 cd ~/second-brain-automation && git pull
-cp -r LXC_5_dados/. /opt/second-brain/dados/
+cd LXC_5_dados && docker compose up -d
 ```
 
 ## Verificação

@@ -58,8 +58,7 @@ cd second-brain-automation
 git sparse-checkout init --cone
 git sparse-checkout set LXC_2_hermes_mcp
 git checkout main
-cp -r LXC_2_hermes_mcp/. /opt/second-brain/hermes/
-cd /opt/second-brain/hermes
+cd LXC_2_hermes_mcp
 ```
 
 ### Passo 3 — Editar variáveis
@@ -72,7 +71,6 @@ nano .env   # fill in LITELLM_MASTER_KEY, HERMES_DASHBOARD_PASSWORD, POSTGRES_PA
 ### Passo 4 — Subir
 
 ```bash
-cd /opt/second-brain/hermes
 docker compose up -d
 docker compose ps
 ```
@@ -81,8 +79,7 @@ docker compose ps
 
 ```bash
 cd ~/second-brain-automation && git pull
-cp -r LXC_2_hermes_mcp/. /opt/second-brain/hermes/
-cd /opt/second-brain/hermes && docker compose up -d
+cd LXC_2_hermes_mcp && docker compose up -d
 ```
 
 ## Vault Obsidian

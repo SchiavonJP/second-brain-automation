@@ -56,8 +56,7 @@ cd second-brain-automation
 git sparse-checkout init --cone
 git sparse-checkout set LXC_1_traefik
 git checkout main
-cp -r LXC_1_traefik/. /opt/second-brain/infra/
-cd /opt/second-brain/infra
+cd LXC_1_traefik
 ```
 
 ### 3. Configure
@@ -73,7 +72,6 @@ echo $(htpasswd -nb admin tua_senha) | sed -e s/\\$/\\$\\$/g
 ### 4. Deploy
 
 ```bash
-cd /opt/second-brain/infra
 docker compose up -d
 docker compose ps
 docker logs sb_traefik
@@ -83,8 +81,7 @@ docker logs sb_traefik
 
 ```bash
 cd ~/second-brain-automation && git pull
-cp -r LXC_1_traefik/. /opt/second-brain/infra/
-cd /opt/second-brain/infra && docker compose up -d
+cd LXC_1_traefik && docker compose up -d
 ```
 
 ## Cloudflare Tunnel (cloudflared)
