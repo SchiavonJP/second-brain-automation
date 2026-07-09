@@ -69,6 +69,18 @@ http:
       middlewares:
         - secure-headers
 
+    # LXC 8 — Apollo (llama.cpp inference)
+    apollo:
+      rule: "Host(`apollo.joaopaulo.me`)"
+      entrypoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: apollo
+      middlewares:
+        - secure-headers
+        - rate-limit-api
+
   services:
 
     # LXC 4 — port 4000
@@ -100,3 +112,9 @@ http:
       loadBalancer:
         servers:
           - url: "http://192.168.0.216:3000"
+
+    # LXC 8 — port 8080 (llama-server)
+    apollo:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.0.217:8080"

@@ -1,0 +1,36 @@
+[Unit]
+Description=llama.cpp Server — Apollo (Qwen3.6 MTP)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/llama.cpp
+
+# Values written by setup.sh — edit /etc/llama-server.env to override
+EnvironmentFile=/etc/llama-server.env
+
+Environment=CUDA_VISIBLE_DEVICES=0
+Environment=LD_LIBRARY_PATH=/usr/local/cuda/lib64
+
+ExecStart=/opt/llama.cpp/build/bin/llama-server \
+  --model ${LLAMA_MODEL_PATH} \
+  --host 0.0.0.0 \
+  --port ${LLAMA_PORT} \
+  --ngl ${LLAMA_NGL} \
+  --spec-type mtp \
+  --spec-draft-n-max 3 \
+  --draft-p-min 0.80 \
+  --flash-attn \
+  --ctx-size ${LLAMA_CTX_SIZE} \
+  --cache-type-k q8_0 \
+  --cache-type-v q8_0 \
+  --threads 6 \
+  --parallel 1 \
+  --cont-batching
+
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

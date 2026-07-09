@@ -47,6 +47,20 @@ model_list:
       model: openrouter/openrouter/free
       api_key: os.environ/OPENROUTER_API_KEY
 
+  # ===== Local (LXC 8 — Apollo, RTX 3060) =====
+
+  - model_name: local-coder
+    litellm_params:
+      model: openai/qwen3.6-35b-mtp
+      api_base: http://192.168.0.217:8080/v1
+      api_key: "none"
+
+  - model_name: local-fast
+    litellm_params:
+      model: openai/qwen3.6-35b-mtp
+      api_base: http://192.168.0.217:8080/v1
+      api_key: "none"
+
 router_settings:
 
   routing_strategy: least-busy

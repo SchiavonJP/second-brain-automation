@@ -1,0 +1,195 @@
+# LXC 8 — Apollo (llama.cpp inference)
+
+> **Codename:** Apollo  
+> **IP:** 192.168.0.217  
+> **Porta API:** 8080  
+> **URL pública:** https://apollo.joaopaulo.me  
+
+Nó de inferência local com GPU. Roda o `llama-server` (llama.cpp) com a RTX 3060 passada via LXC. Expõe uma API compatível com OpenAI consumida pelo LiteLLM (LXC 4).
+
+---
+
+## Hardware alocado
+
+| Recurso | Valor |
+|---------|-------|
+| CPU | 8 cores visíveis no LXC (llama-server usa 6 threads) |
+| RAM | 48 GB |
+| Swap | 8 GB |
+| Disco | 50 GB |
+| GPU | RTX 3060 12 GB (passthrough) |
+| Bind mount | `/mnt/models` → `/models` (modelos GGUF) |
+
+---
+
+## Pré-requisitos no host Proxmox
+
+O driver NVIDIA já deve estar instalado no host (veja `drivers-nvidia.md` na raiz do repo).
+
+### 1. Criar bind mount para modelos
+
+```bash
+# No host Proxmox
+mkdir -p /mnt/models
+```
+
+### 2. Criar o container
+
+
+```bash
+pct create 110 local:vztmpl/debian-13-standard_13.0-1_amd64.tar.zst \
+  --hostname apollo \
+  --memory 49152 \
+  --swap 8192 \
+  --cores 8 \
+  --rootfs local-lvm:50 \
+  --net0 name=eth0,bridge=vmbr0,ip=192.168.0.217/24,gw=192.168.0.1 \
+  --unprivileged 0 \
+  --features nesting=1
+```
+
+### 3. Adicionar GPU passthrough ao config do LXC
+
+Editar `/etc/pve/lxc/110.conf` (ou o ID que você usou) e adicionar ao final:
+
+```ini
+# GPU passthrough — RTX 3060
+lxc.cgroup2.devices.allow: c 195:* rwm
+lxc.cgroup2.devices.allow: c 509:* rwm
+lxc.mount.entry: /dev/nvidia0          dev/nvidia0          none bind,optional,create=file
+lxc.mount.entry: /dev/nvidiactl        dev/nvidiactl        none bind,optional,create=file
+lxc.mount.entry: /dev/nvidia-uvm       dev/nvidia-uvm       none bind,optional,create=file
+lxc.mount.entry: /dev/nvidia-uvm-tools dev/nvidia-uvm-tools none bind,optional,create=file
+lxc.mount.entry: /dev/nvidia-modeset   dev/nvidia-modeset   none bind,optional,create=file
+
+# Bind mount para modelos
+mp0: /mnt/models,mp=/models
+```
+
+> **Nota:** os device numbers `195` e `509` são os major numbers padrão do driver NVIDIA. Confirme com `ls -la /dev/nvidia*` no host antes de editar.
+
+### 4. Iniciar o container
+
+```bash
+pct start 110
+pct enter 110
+```
+
+---
+
+## Deploy
+
+### 1. Copiar os arquivos do repo para o LXC
+
+```bash
+# No host, copiar este diretório para o LXC
+pct push 110 /path/to/homelabzin/LXC_8_llama /opt/apollo --archive
+```
+
+Ou dentro do LXC via sparse-checkout (mesmo padrão dos outros LXCs):
+
+```bash
+# SSH access (run once from Proxmox host)
+pct exec <VMID> -- mkdir -p /root/.ssh
+cat ~/.ssh/id_ed25519.pub | pct exec <VMID> -- tee /root/.ssh/authorized_keys
+pct exec <VMID> -- chmod 700 /root/.ssh
+pct exec <VMID> -- chmod 600 /root/.ssh/authorized_keys
+
+# Dentro do LXC
+apt-get install -y git
+mkdir /opt/apollo && cd /opt/apollo
+git init
+git remote add origin https://github.com/seuuser/homelabzin.git
+git sparse-checkout init --cone
+git sparse-checkout set LXC_8_llama
+git pull origin main
+cp -r LXC_8_llama/* /opt/apollo/
+```
+
+### 2. Configurar variáveis (opcional)
+
+```bash
+cp /opt/apollo/.env.example /opt/apollo/.env
+# Editar se precisar alterar porta, ctx-size, ngl, etc.
+nano /opt/apollo/.env
+```
+
+### 3. Rodar o setup
+
+```bash
+cd /opt/apollo
+bash setup.sh
+```
+
+O script é **idempotente** — pode ser reexecutado sem problemas. Ele:
+1. Instala o driver NVIDIA userspace (sem módulo de kernel)
+2. Corrige o bug do `nvidia-smi` vazio
+3. Instala o CUDA toolkit
+4. Clona e compila o llama.cpp com CUDA (sm_86 = RTX 3060)
+5. Baixa o modelo via `huggingface-cli`
+6. Instala e inicia o serviço systemd
+
+---
+
+## Gerenciar o serviço
+
+```bash
+systemctl status llama-server      # estado atual
+systemctl restart llama-server     # reiniciar (ex: após trocar modelo)
+systemctl stop llama-server        # parar
+journalctl -u llama-server -f      # logs em tempo real
+```
+
+Para trocar o modelo ou ajustar parâmetros, edite `/etc/llama-server.env` e reinicie.
+
+---
+
+## Verificação
+
+```bash
+# GPU visível
+nvidia-smi
+
+# API respondendo
+curl http://localhost:8080/health
+
+# Teste de inferência
+curl http://localhost:8080/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "qwen3.6-35b-mtp",
+    "messages": [{"role": "user", "content": "Hello!"}],
+    "max_tokens": 64
+  }'
+
+# Via LiteLLM (do host ou qualquer máquina na rede)
+curl http://192.168.0.211:4000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"model":"local-coder","messages":[{"role":"user","content":"Hello"}],"max_tokens":32}'
+```
+
+---
+
+## Performance esperada
+
+| Métrica | Valor estimado |
+|---------|---------------|
+| VRAM usada | ~10–12 GB (Q4_K_M, offload parcial) |
+| RAM usada | ~13–15 GB (camadas offloaded + KV cache) |
+| Tokens/s geração | 50–80 tok/s com MTP |
+| Contexto | 16K tokens (padrão), 32K possível reduzindo `LLAMA_NGL` para ~60 |
+| TTFT | ~1–3 segundos |
+
+---
+
+## Troubleshooting
+
+| Problema | Causa provável | Solução |
+|----------|---------------|---------|
+| `/dev/nvidia0 not found` | GPU passthrough não configurado | Adicionar linhas ao `/etc/pve/lxc/NNN.conf` (ver acima) |
+| `nvidia-smi: not found` | Bug do pacote vazio | O setup.sh extrai do `.run` automaticamente |
+| `CUDA not found` no build | PATH incorreto | `export PATH=/usr/local/cuda/bin:$PATH` e rerodar cmake |
+| `spec-type mtp` ignorado | GGUF sem cabeças MTP | Usar especificamente o GGUF com sufixo `-MTP` |
+| Tok/s baixo apesar do MTP | `draft-p-min` rejeitando tudo | Baixar para `0.70` em `/etc/llama-server.env` e restart |
+| OOM ao carregar modelo | VRAM insuficiente | Reduzir `LLAMA_NGL` para 50–60 para offloar mais para RAM |
+| Contexto 32K não funciona | KV cache estoura VRAM | Reduzir `LLAMA_NGL` para ~60 para liberar ~2GB de VRAM |

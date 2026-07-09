@@ -13,6 +13,7 @@ Proxmox homelab "second brain" with 7 LXC containers:
 | 5 | Dados | Postgres 17, Redis 7, FalkorDB | 192.168.0.210 | 5432/6379/6380 |
 | 6 | sb-dev | Dev environment (deferred) | 192.168.0.215 | — |
 | 7 | sb-monitor | Uptime Kuma + Dockhand | 192.168.0.216 | 3001 (Kuma), 3000 (Dockhand) |
+| 8 | Apollo | llama.cpp inference (RTX 3060) | 192.168.0.217 | 8080 |
 
 ## MCP Architecture
 
@@ -37,6 +38,7 @@ A graphify graph exists at `graphify-out/graph.json`. Use it for codebase naviga
 - LXC_4 (LiteLLM) IP: `192.168.0.211` — used in Hermes docker-compose
 - LXC_5 (Dados) IP: `192.168.0.210` — Postgres and Redis
 - LXC_7 (Monitor) IP: `192.168.0.216` — Uptime Kuma + Dockhand
+- LXC_8 (Apollo) IP: `192.168.0.217` — llama-server OpenAI-compatible API
 
 ## Docker Service Names
 
