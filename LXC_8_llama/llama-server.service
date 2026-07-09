@@ -6,10 +6,7 @@ After=network.target
 Type=simple
 User=root
 WorkingDirectory=/opt/llama.cpp
-
-# Values written by setup.sh — edit /etc/llama-server.env to override
 EnvironmentFile=/etc/llama-server.env
-
 Environment=CUDA_VISIBLE_DEVICES=0
 Environment=LD_LIBRARY_PATH=/usr/local/cuda/lib64
 
