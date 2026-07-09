@@ -98,12 +98,13 @@ pct exec <VMID> -- chmod 600 /root/.ssh/authorized_keys
 # Dentro do LXC
 apt-get install -y git
 mkdir /opt/apollo && cd /opt/apollo
-git init
-git remote add origin https://github.com/seuuser/homelabzin.git
+# Clone only this folder (run on LXC 5)
+git clone --no-checkout --filter=blob:none https://github.com/SchiavonJP/second-brain-automation.git
+cd second-brain-automation
 git sparse-checkout init --cone
 git sparse-checkout set LXC_8_llama
-git pull origin main
-cp -r LXC_8_llama/* /opt/apollo/
+git checkout main
+cd LXC_8_llama
 ```
 
 ### 2. Configurar variáveis (opcional)
