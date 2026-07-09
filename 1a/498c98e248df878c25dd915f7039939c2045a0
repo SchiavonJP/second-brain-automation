@@ -1,0 +1,38 @@
+LXC_8_llama/readme.md
+  s_247462710b9784::t_7c7fd05faf49d1 16
+  s_247462710b9784::t_09aeff2b4f28cb 1-15,17-39,41-43,45-52,54-73,76-85,87-195
+  s_247462710b9784::t_a6f940369c82ab 44
+LXC_1_traefik/dynamic/services.yml
+  s_247462710b9784::t_1e49363c7ebbdf 72-83
+  s_247462710b9784::t_b921e7acec5991 115-120
+LXC_8_llama/llama-server.service
+  s_247462710b9784::t_b3d084b05babaf 1-27,29-36
+  s_247462710b9784::t_8e77233d64aec7 28
+LXC_8_llama/.env.example
+  s_247462710b9784::t_8ac61664c6b21c 1-15
+drivers-nvidia.md
+  s_247462710b9784::t_99e6c299cb85ce 116
+CLAUDE.md
+  s_247462710b9784::t_d5048cf55fd038 41
+  s_247462710b9784::t_51c2a5d3c25dc0 16
+LXC_8_llama/setup.sh
+  s_247462710b9784::t_fb8d630762a6c8 1-243
+LXC_4_litellm/config.yaml
+  s_247462710b9784::t_7bdf68859ab888 50-63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "1a498c98e248df878c25dd915f7039939c2045a0",
+  "prompts": {},
+  "sessions": {
+    "s_247462710b9784": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c5259969-c3ba-4066-81e1-b023b4cf5008",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "João Paulo Schiavon <schiavonjp@yahoo.com.br>"
+    }
+  }
+}
