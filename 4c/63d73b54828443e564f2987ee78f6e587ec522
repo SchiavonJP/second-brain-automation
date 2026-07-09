@@ -1,0 +1,19 @@
+LXC_8_llama/setup.sh
+  s_247462710b9784::t_248c99756f2fc0 201
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "4c63d73b54828443e564f2987ee78f6e587ec522",
+  "prompts": {},
+  "sessions": {
+    "s_247462710b9784": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c5259969-c3ba-4066-81e1-b023b4cf5008",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "João Paulo Schiavon <schiavonjp@yahoo.com.br>"
+    }
+  }
+}
