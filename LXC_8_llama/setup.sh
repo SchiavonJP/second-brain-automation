@@ -7,7 +7,7 @@ set -euo pipefail
 # Constants (override via .env in the same directory)
 # ──────────────────────────────────────────────────────────────
 DRIVER_VERSION="610.43.02"
-CUDA_PKG="cuda-toolkit-12-8"
+# Auto-detected in step 4 — picks the latest cuda-toolkit-X-Y available in the repo
 LLAMA_REPO="https://github.com/ggml-org/llama.cpp"
 MODEL_REPO="localweights/Qwen3.6-35B-A3B-MTP-Q4_K_M-GGUF"
 MODEL_FILE="Qwen3.6-35B-A3B-MTP-Q4_K_M.gguf"
@@ -141,6 +141,12 @@ else
   dpkg -i /tmp/cuda-keyring.deb
   rm /tmp/cuda-keyring.deb
   apt-get update -qq
+
+  # Pick the latest versioned cuda-toolkit-X-Y available in the repo
+  CUDA_PKG=$(apt-cache search 'cuda-toolkit-[0-9]' 2>/dev/null \
+    | grep -oP 'cuda-toolkit-\d+-\d+' | sort -V | tail -1)
+  CUDA_PKG="${CUDA_PKG:-cuda-toolkit}"
+  echo "  Installing: ${CUDA_PKG}"
   apt-get install -y "${CUDA_PKG}"
 
   # Persist to /etc/environment for future shells
