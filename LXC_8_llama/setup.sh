@@ -197,7 +197,7 @@ mkdir -p "$MODEL_DIR"
 if [ -f "${LLAMA_MODEL_PATH}" ]; then
   ok "Model already present at ${LLAMA_MODEL_PATH}"
 else
-  pip3 install -q huggingface-hub
+  pip3 install -q --break-system-packages huggingface-hub
   huggingface-cli download "$MODEL_REPO" \
     --local-dir "$MODEL_DIR" \
     --include "*.gguf"
