@@ -198,7 +198,7 @@ if [ -f "${LLAMA_MODEL_PATH}" ]; then
   ok "Model already present at ${LLAMA_MODEL_PATH}"
 else
   pip3 install -q --break-system-packages huggingface-hub
-  huggingface-cli download "$MODEL_REPO" \
+  hf download "$MODEL_REPO" \
     --local-dir "$MODEL_DIR" \
     --include "*.gguf"
   ok "Model downloaded to ${LLAMA_MODEL_PATH}"
