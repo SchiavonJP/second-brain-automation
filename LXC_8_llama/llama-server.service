@@ -21,7 +21,7 @@ ExecStart=/opt/llama.cpp/build/bin/llama-server \
   --spec-type draft-mtp \
   --spec-draft-n-max 3 \
   --draft-p-min 0.80 \
-  --flash-attn \
+  --flash-attn on \
   --ctx-size ${LLAMA_CTX_SIZE} \
   --cache-type-k q8_0 \
   --cache-type-v q8_0 \
