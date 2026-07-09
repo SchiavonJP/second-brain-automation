@@ -1,0 +1,19 @@
+LXC_8_llama/llama-server.service
+  s_247462710b9784::t_d2ae0b0a56aec4 21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "9b34d17091be467a210d0fc2e301d0f17b591200",
+  "prompts": {},
+  "sessions": {
+    "s_247462710b9784": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c5259969-c3ba-4066-81e1-b023b4cf5008",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "João Paulo Schiavon <schiavonjp@yahoo.com.br>"
+    }
+  }
+}
